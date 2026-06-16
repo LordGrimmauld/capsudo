@@ -180,18 +180,23 @@
                       StandardInput = "socket";
                       ExecStart =
                         let
-                          optionFormat = optionName: {
-                            sep = " ";
-                            explicitBool = false;
-                            option = "-${optionName}";
-                          };
+                          optionFormat =
+                            optionName:
+                            let
+                              isLong = builtins.stringLength optionName > 1;
+                            in
+                            {
+                              option = if isLong then "--${optionName}" else "-${optionName}";
+                              sep = " ";
+                              explicitBool = false;
+                            };
                         in
                         lib.toString (
                           [ (lib.getExe' cfg.package "capsudod") ]
                           ++ (lib.cli.toCommandLine optionFormat {
-                            f = capability.ignoreClientArgs;
-                            E = capability.ignoreClientEnv;
-                            k = true; # always keep environment from service manager
+                            disallow-client-args = capability.ignoreClientArgs;
+                            disallow-client-env = capability.ignoreClientEnv;
+                            keep-daemon-env = true; # always keep environment from service manager
                           })
                           ++ lib.optionals (capability.program != null) [
                             capability.program

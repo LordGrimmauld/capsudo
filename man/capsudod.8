@@ -33,18 +33,20 @@ is provided in
 .Xr capsudo 1 .
 .Sh OPTIONS
 .Bl -tag -width Ds
-.It Fl S Ar socket
+.It Fl S Fl Fl socket Ar socket
 Listen on the specified UNIX domain socket path.
-.It Fl f
+.It Fl f Fl Fl disallow-client-args
 Ignore any client-provided arguments.
-.It Fl E
+.It Fl E Fl Fl disallow-client-env
 Ignore any client-provided environment variables.
-.It Fl o Ar user Ns Op : Ns Ar group
+.It Fl k Fl Fl keep-daemon-env
+Keep daemon env when calling exec to program.
+.It Fl o Fl Fl owner Ar user Ns Op : Ns Ar group
 Set ownership of the listening socket.
 This is typically used to restrict which users may connect.
-.It Fl m Ar mode
+.It Fl m Fl Fl mode Ar mode
 Set permissions of the listening socket (octal).
-.It Fl e Ar key=value
+.It Fl e Fl Fl env Ar key=value
 Add an environment assignment for the executed program.
 This option may be specified multiple times.
 .It Ar program

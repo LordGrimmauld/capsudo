@@ -31,6 +31,7 @@
 #include <grp.h>
 #include <pwd.h>
 #include <limits.h>
+#include <getopt.h>
 
 #include "capsudo-common.h"
 #include "capsudo-message.h"
@@ -326,6 +327,19 @@ static int daemon_loop(const char *sockaddr, char *envp[], int argc, char *argv[
 	return EXIT_SUCCESS;
 }
 
+static const struct option long_options[] = {
+    {"version", no_argument, NULL, 'v'},
+    {"help", no_argument, NULL, 'h'},
+    {"disallow-client-args", no_argument, NULL, 'f'},
+    {"disallow-client-env", no_argument, NULL, 'E'},
+    {"keep-daemon-env", no_argument, NULL, 'k'},
+    {"socket", required_argument, NULL, 'S'},
+    {"env", required_argument, NULL, 'e'},
+    {"owner", required_argument, NULL, 'o'},
+    {"mode", required_argument, NULL, 'm'},
+    {0, 0, 0, 0},
+};
+
 int main(int argc, char *argv[], char **service_manager_envp)
 {
 	const char *sockaddr = NULL;
@@ -337,7 +351,7 @@ int main(int argc, char *argv[], char **service_manager_envp)
 	mode_t mode = 0770;
 	bool keep_env = false;
 
-	while ((opt = getopt(argc, argv, "S:e:o:m:fEhk")) != -1)
+	while ((opt = getopt_long(argc, argv, "S:e:o:m:fEhk", long_options, NULL)) != -1)
 	{
 		switch (opt)
 		{

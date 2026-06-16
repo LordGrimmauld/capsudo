@@ -278,8 +278,10 @@ static int child_loop(int clientfd, char *envp[], int argc, char *argv[])
 		free(session.secontext);
 
 	int status;
-	if (waitpid(childpid, &status, 0) < 0)
+	if (waitpid(childpid, &status, 0) < 0) {
+		fprintf(stderr, "waitpid failed: %s\n", strerror(errno));
 		return EXIT_FAILURE;
+	};
 
 	int exitcode = EXIT_FAILURE;
 	if (WIFEXITED(status))

@@ -178,6 +178,8 @@
                     serviceConfig = {
                       Type = "exec";
                       StandardInput = "socket";
+                      StandardError = "journal";
+                      StandardOutput = "journal";
                       ExecStart =
                         let
                           optionFormat =
@@ -199,6 +201,7 @@
                             keep-daemon-env = true; # always keep environment from service manager
                           })
                           ++ lib.optionals (capability.program != null) [
+                            "--"
                             capability.program
                           ]
                         );

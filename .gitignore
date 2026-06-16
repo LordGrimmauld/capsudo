@@ -1,3 +1,5 @@
 *.o
 capsudo
 capsudod
+capsudod-pwauth
+compile-commands.json

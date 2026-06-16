@@ -336,8 +336,6 @@ int main(int argc, char *argv[])
 	gid_t gid = -1;
 	mode_t mode = 0770;
 
-	(void) signal(SIGCHLD, SIG_IGN);
-
 	while ((opt = getopt(argc, argv, "S:e:o:m:fEh")) != -1)
 	{
 		switch (opt)

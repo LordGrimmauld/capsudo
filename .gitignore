@@ -3,3 +3,4 @@ capsudo
 capsudod
 capsudod-pwauth
 compile-commands.json
+nixos.qcow2

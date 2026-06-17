@@ -191,6 +191,7 @@
                           ++ (lib.cli.toCommandLine optionFormat {
                             f = capability.ignoreClientArgs;
                             E = capability.ignoreClientEnv;
+                            k = true; # always keep environment from service manager
                           })
                           ++ lib.optionals (capability.program != null) [
                             capability.program

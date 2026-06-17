@@ -2,6 +2,7 @@ CAPSUDO_DEFAULT_SOCK ?= /run/capsudo/default
 PREFIX ?= /usr/local
 CONFDIR ?= /etc
 MANDIR ?= ${PREFIX}/share/man
+BUILD ?= release
 CFLAGS ?= -O2 -Wall -pedantic -std=gnu2x -ggdb3
 PROGS := capsudo capsudod capsudod-pwauth
 CPPFLAGS += -D_GNU_SOURCE
@@ -17,16 +18,25 @@ CAPSUDOD_PWAUTH_OBJS := ${CAPSUDOD_PWAUTH_SRCS:.c=.o}
 
 CPPFLAGS += '-DCAPSUDO_DEFAULT_SOCK="${CAPSUDO_DEFAULT_SOCK}"'
 
+ifeq ($(BUILD),debug)
+	CFLAGS += -g -O0
+endif
+
+ifeq ($(BUILD),asan)
+	CFLAGS += -g -O1 -fsanitize=address
+	LDFLAGS += -fsanitize=address
+endif
+
 all: ${PROGS}
 
 capsudo: ${CAPSUDO_OBJS}
-	${CC} -o $@ ${CAPSUDO_OBJS}
+	${CC} ${LDFLAGS} -o $@ ${CAPSUDO_OBJS}
 
 capsudod: ${CAPSUDOD_OBJS}
-	${CC} -o $@ ${CAPSUDOD_OBJS}
+	${CC} ${LDFLAGS} -o $@ ${CAPSUDOD_OBJS}
 
 capsudod-pwauth: ${CAPSUDOD_PWAUTH_OBJS}
-	${CC} -o $@ ${CAPSUDOD_PWAUTH_OBJS} -lcrypt
+	${CC} ${LDFLAGS} -o $@ ${CAPSUDOD_PWAUTH_OBJS} -lcrypt
 
 clean:
 	rm -f ${PROGS} ${CAPSUDO_OBJS} ${CAPSUDOD_OBJS}

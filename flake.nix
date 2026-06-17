@@ -58,6 +58,7 @@
               pkgs.libxcrypt
               pkgs.clang-tools # for clang-format, LSP
               pkgs.bear # generate compile-commands.json
+              pkgs.valgrind
             ];
           };
         }

@@ -188,6 +188,15 @@ static void fatality(int clientfd, int errorcode, char *errfmt, ...)
 	_exit(errorcode);
 }
 
+static void free_strv(char **v)
+{
+    if (!v)
+        return;
+    for (size_t i = 0; v[i] != NULL; i++)
+        free(v[i]);
+    free(v);
+}
+
 static int child_loop(int clientfd, char *envp[], int argc, char *argv[])
 {
 	int argi, envi;
@@ -276,6 +285,9 @@ static int child_loop(int clientfd, char *envp[], int argc, char *argv[])
 
 	if (session.secontext != NULL)
 		free(session.secontext);
+
+	free_strv(session.envp);
+	free_strv(session.argv);
 
 	int status;
 	if (waitpid(childpid, &status, 0) < 0) {

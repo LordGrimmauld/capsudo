@@ -14,7 +14,6 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <err.h>
-#include <errno.h>
 #include <string.h>
 #include <stdbool.h>
 #include <alloca.h>
@@ -135,7 +134,7 @@ static bool send_file_descriptors(int sockfd)
 	union {
 		char rawbuf[CMSG_SPACE(sizeof(int) * 3)];
 		struct cmsghdr align;
-	} controlbuf;
+	} controlbuf = {};
 
 	struct msghdr msg = {
 		.msg_iov = &fdmsg_iov,
@@ -228,7 +227,7 @@ static enum capsudo_sessionresult handle_incoming_message(int sockfd, char **err
 	{
 		restore_tty();
 		close(sockfd);
-		err(EXIT_FAILURE, "failed to read %zu bytes from the daemon, got %zu", msg->length, n);
+		err(EXIT_FAILURE, "failed to read %u bytes from the daemon, got %zu", msg->length, n);
 	}
 
 	switch (msg->fieldtype)
@@ -257,7 +256,7 @@ static enum capsudo_sessionresult handle_incoming_message(int sockfd, char **err
 		}
 
 		default:
-			fprintf(stderr, "capsudo: ignoring unexpected message %d, length %zu\n", msg->fieldtype, msg->length);
+			fprintf(stderr, "capsudo: ignoring unexpected message %d, length %u\n", msg->fieldtype, msg->length);
 	}
 
 	return CAPSUDO_SESSION_OK;

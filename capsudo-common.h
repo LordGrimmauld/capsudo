@@ -12,6 +12,7 @@
 
 #pragma once
 #include <stddef.h>
+#include <stdint.h>
 
 enum capsudo_fieldtype {
 	CAPSUDO_ARG = 1,
@@ -31,8 +32,9 @@ enum capsudo_sessiontype {
 	CAPSUDO_NONINTERACTIVE = 3,
 };
 
+// be explicit about byte lengths and alignment here to avoid weirdness if client/daemon are built using different compiler options
 struct capsudo_message {
-	enum capsudo_fieldtype fieldtype;
-	size_t length;
+	uint8_t fieldtype;
+	uint32_t length;
 	char data[];
-};
+} __attribute__((packed));

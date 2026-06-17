@@ -235,7 +235,12 @@
                   socket.mode = "666"; # anyone can call
                   program = lib.getExe' pkgs.coreutils "true";
                 };
+                capabilities.env = {
+                  socket.mode = "666"; # anyone can call
+                  program = lib.getExe' pkgs.coreutils "env";
+                };
               };
+              systemd.services."capsudo-env@".environment.FOO = "bar,buzz";
               users.users = {
                 admin = {
                   isNormalUser = true;

@@ -58,7 +58,7 @@ struct capsudo_session {
 [[noreturn]]
 static void usage(void)
 {
-	fprintf(stderr, "usage: capsudod [-S socket] [-fE] [-o user[:group]] [-m mode] [-e key=value...] [program]\n");
+	fprintf(stderr, "usage: capsudod [-S socket] [-fEk] [-o user[:group]] [-m mode] [-e key=value...] [program]\n");
 	exit(EXIT_FAILURE);
 }
 
@@ -326,7 +326,7 @@ static int daemon_loop(const char *sockaddr, char *envp[], int argc, char *argv[
 	return EXIT_SUCCESS;
 }
 
-int main(int argc, char *argv[])
+int main(int argc, char *argv[], char **service_manager_envp)
 {
 	const char *sockaddr = NULL;
 	char **envp = NULL;
@@ -335,8 +335,9 @@ int main(int argc, char *argv[])
 	uid_t uid = -1;
 	gid_t gid = -1;
 	mode_t mode = 0770;
+	bool keep_env = false;
 
-	while ((opt = getopt(argc, argv, "S:e:o:m:fEh")) != -1)
+	while ((opt = getopt(argc, argv, "S:e:o:m:fEhk")) != -1)
 	{
 		switch (opt)
 		{
@@ -345,6 +346,9 @@ int main(int argc, char *argv[])
 			break;
 		case 'f':
 			no_client_argv = true;
+			break;
+		case 'k':
+			keep_env = true;
 			break;
 		case 'E':
 			no_client_env = true;
@@ -367,6 +371,15 @@ int main(int argc, char *argv[])
 			break;
 		default:
 			break;
+		}
+	}
+
+	if(keep_env) {
+	  for (char **envi = service_manager_envp; *envi != NULL; envi++)
+		{
+	    envp = reallocarray(envp, ++envp_nmemb + 1, sizeof(char *));
+	    envp[envp_nmemb - 1] = strdup(*envi);
+	    envp[envp_nmemb] = NULL;
 		}
 	}
 
